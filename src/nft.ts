@@ -1,7 +1,7 @@
 import { Address, beginCell, toNano } from '@ton/core';
 
 export const OPERATOR_CONTRACT = Address.parse(
-  'EQ...' // адрес задеплоенного Operator.tact
+  'EQ...' // адрес задеплоенного Operator.tact (пока заглушка)
 );
 export const OPERATOR_WALLET = Address.parse(
   'UQBR4_plcJKaOI7FOW2QVRKTane60T7qXDc8q7eHVlDORQGz'
