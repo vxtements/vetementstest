@@ -1,8 +1,12 @@
 import { Address, beginCell, toNano } from '@ton/core';
 
-export const OPERATOR_CONTRACT = Address.parse(
-  'EQ...' // адрес задеплоенного Operator.tact (пока заглушка)
-);
+// ⚠️ ЗАМЕНИ на реальный адрес задеплоенного Operator.tact
+// Пока стоит валидный адрес-заглушка, чтобы сайт грузился.
+const RAW_OPERATOR_CONTRACT =
+  'EQD__________________________________________-_________________';
+
+export const OPERATOR_CONTRACT = Address.parse(RAW_OPERATOR_CONTRACT);
+
 export const OPERATOR_WALLET = Address.parse(
   'UQBR4_plcJKaOI7FOW2QVRKTane60T7qXDc8q7eHVlDORQGz'
 );
