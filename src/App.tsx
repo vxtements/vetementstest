@@ -29,9 +29,7 @@ export default function App() {
     if (!address || !agreed) return;
 
     if (!contractReady) {
-      setStatus(
-        'Контракт оператора ещё не задеплоен. Обратитесь в поддержку.'
-      );
+      setStatus('Контракт оператора ещё не задеплоен. Обратитесь в поддержку.');
       return;
     }
 
@@ -141,13 +139,7 @@ export default function App() {
           </p>
 
           {!contractReady && (
-            <p
-              style={{
-                fontSize: 13,
-                color: '#fbbf24',
-                marginBottom: 12,
-              }}
-            >
+            <p style={{ fontSize: 13, color: '#fbbf24', marginBottom: 12 }}>
               ⚠️ Контракт оператора ещё не задеплоен. Кнопка отключена.
             </p>
           )}
@@ -203,6 +195,4 @@ export default function App() {
       )}
     </div>
   );
-}
-  }
 }
