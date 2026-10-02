@@ -1,1 +1,30 @@
-
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+}
+button {
+  background: #0098ea;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 15px;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
